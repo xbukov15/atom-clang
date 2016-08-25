@@ -9,6 +9,7 @@ activate = ->
 
 deactivate = ->
   contextMenu.dispose()
+  contextMenu = null
 
 module.exports = {
   activate

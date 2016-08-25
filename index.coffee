@@ -4,7 +4,10 @@ events = require './lib/events'
 linter = require './lib/linter'
 provider = require './lib/provider'
 
+{clangVersion} = require('bindings') 'clang.node'
+
 activate = ->
+  console.log 'atom-clang', clangVersion()
   commands.activate()
   events.activate()
 
