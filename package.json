@@ -1,0 +1,43 @@
+{
+  "name": "atom-clang",
+  "description": "C/C++ Code Completion and Linting via LibClang for Atom Editor",
+  "keywords": [
+    "c",
+    "c++",
+    "clang",
+    "completion",
+    "libclang",
+    "linter"
+  ],
+  "author": "Joe Roback",
+  "version": "0.0.0",
+  "main": "index",
+  "repository": "https://github.com/joeroback/atom-clang",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.9.0 <2.0.0"
+  },
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "nan": "^2.4.0"
+  },
+  "devDependencies": {},
+  "providedServices": {
+    "autocomplete.provider": {
+      "versions": {
+        "2.0.0": "provide"
+      }
+    },
+    "linter": {
+      "versions": {
+        "1.0.0": "provideLinter"
+      }
+    }
+  },
+  "package-deps": {
+    "linter": "^1.11.16"
+  },
+  "os": [
+    "!win32"
+  ]
+}
