@@ -26,7 +26,7 @@ Currently, this only works on Linux and Mac. I do not have a Windows computer. I
 
 ### Installing
 
-This package should be installed through the Atom package manager. For the bleeding edge, you can clone this repository and link it into Atom with `apm` if desired.
+This package should be installed through the Atom package manager. Search for package named [atom-clang](https://atom.io/packages/atom-clang). For the bleeding edge, you can clone this repository and link it into Atom with `apm` if desired.
 
 ### Global Configuration
 
