@@ -1,2 +1,0 @@
-'atom-text-editor':
-  'alt-y t': 'atom-clang:get-type'
