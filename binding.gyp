@@ -1,4 +1,7 @@
 {
+  "variables": {
+    "llvm_config": "<!(./llvm-config.sh)"
+  },
   "targets": [
     {
       "target_name": "clang",
@@ -39,12 +42,12 @@
       },
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
-        "<!@(llvm-config --includedir)",
+        "<!@(<(llvm_config) --includedir)",
       ],
       "link_settings": {
         "libraries": [
-          "-Wl,-rpath,<!(llvm-config --libdir)",
-          "<!@(llvm-config --ldflags)",
+          "-Wl,-rpath,<!(<(llvm_config) --libdir)",
+          "<!@(<(llvm_config) --ldflags)",
           "-lclang",
         ],
       },
