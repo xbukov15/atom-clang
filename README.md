@@ -54,10 +54,16 @@ Having a reproducible test case would also greatly increase the debug time, thou
 
 I would love the roadmap to be largely driven by users, but her is a list I came up to get started.
 
-* Add support for compile_commands.json
-* Add support for precompiled headers
-* Add support for FixIt
-* Add support for <kbd>ctrl</kbd>-click code navigation
+#### Short Term
+
+- [ ] Add support for compile_commands.json
+- [ ] Add support for precompiled headers
+
+#### Long Term
+
+- [ ] Replace [linter](https://atom.io/packages/linter) (I find the interface unsuited for C++ linting, and to be frank, very buggy)
+  - [ ] Add support for FixIt
+- [ ] Add support for <kbd>ctrl</kbd>-click code navigation
 
 ## License
 
