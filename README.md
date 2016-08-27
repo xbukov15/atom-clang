@@ -20,7 +20,7 @@ Since this is a package uses C++, it will require the package to be compiled. Th
 * C++11 compiler, either GCC or Clang
 * LibClang 3.8 or greater
 
-LibClang is detected via `llvm-config` command. Currently, it must be called `llvm-config` exactly. Not `llvm-config-3.8`, etc. I am looking into better ways to handle this, but node-gyp is limited in some sense.
+LibClang is detected via `llvm-config` command. It needs to build and link against the LibClang headers and library. It attempts to find the newest version of `llvm-config` it can on your system. Currently, I do not know of way at package install time through Atom to let the user specify which one to use. See [llvm-config.sh](https://github.com/joeroback/atom-clang/blob/master/llvm-config.sh).
 
 Currently, this only works on Linux and Mac. I do not have a Windows computer. I would welcome any patches / pull requests to add Windows support.
 
