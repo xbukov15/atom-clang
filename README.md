@@ -63,7 +63,7 @@ I would love the roadmap to be largely driven by users, but her is a list I came
 
 MIT License
 
-Copyright (c) 2016 Joe Roback <joe.roback@gmail.com>
+Copyright (c) 2016, Joe Roback &lt;<joe.roback@gmail.com>&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
