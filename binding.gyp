@@ -14,6 +14,12 @@
         "src/diagnostic.cpp",
         "src/unsaved_files.cpp",
       ],
+      "defines": [
+        "NDEBUG",
+        "__STDC_CONSTANT_MACROS",
+        "__STDC_FORMAT_MACROS",
+        "__STDC_LIMIT_MACROS"
+      ],
       "cflags!": [
       ],
       "cflags_cc!": [
@@ -49,6 +55,7 @@
           "-Wl,-rpath,<!(<(llvm_config) --libdir)",
           "<!@(<(llvm_config) --ldflags)",
           "-lclang",
+          "<!@(<(llvm_config) --system-libs)",
         ],
       },
     },
