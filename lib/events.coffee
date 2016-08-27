@@ -11,18 +11,6 @@ util = require './util'
 
 disposables = null
 
-observerProjectPaths = ->
-  console.log 'observe paths', atom.project.getPaths()
-  atom.workspace.getTextEditors()
-    .forEach (editor) ->
-      console.log editor
-
-  atom.project.onDidChangePaths (paths) ->
-    console.log 'onDidChangePaths', paths
-    atom.workspace.getTextEditors()
-      .forEach (editor) ->
-        console.log editor
-
 observeEditors = ->
   atom.workspace.observeTextEditors (editor) ->
 
@@ -132,7 +120,6 @@ observeEditors = ->
 activate = ->
   disposables = new CompositeDisposable()
   disposables.add observeEditors()
-  disposables.add observerProjectPaths()
 
 deactivate = ->
   disposables.dispose()
