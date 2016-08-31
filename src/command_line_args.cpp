@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2016, Joe Roback <joe.roback@gmail.com>. All Rights Reserved.
  */
+#include <cstdio>
+#include <string>
+
 #include "command_line_args.hpp"
+
 
 namespace node_clang
 {
@@ -9,7 +13,7 @@ namespace node_clang
 command_line_args::command_line_args(const v8::Local<v8::Array>& js_command_line_args)
 {
     std::uint32_t length = js_command_line_args->Length();
-    _data.reserve(length);
+    _data.reserve(length + 1);
 
     for (std::uint32_t i = 0; i < length; ++i)
     {
@@ -25,6 +29,12 @@ command_line_args::command_line_args(const v8::Local<v8::Array>& js_command_line
             _data.emplace_back(element_data);
         }
     }
+
+    // workaround for missing search path using libclang on linux (macport clang seems to get it right...)
+    std::size_t workaround_length = strlen(CLANG_SEARCH_PATH) + 3;
+    char* workaround = new char[workaround_length];
+    std::snprintf(workaround, workaround_length, "-I%s", CLANG_SEARCH_PATH);
+    _data.emplace_back(workaround);
 }
 
 command_line_args::~command_line_args() noexcept
