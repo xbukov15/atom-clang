@@ -7,9 +7,12 @@ provider = require './lib/provider'
 {clangVersion} = require('bindings') 'clang.node'
 
 activate = ->
-  console.log 'atom-clang', clangVersion()
-  commands.activate()
-  events.activate()
+  require 'atom-package-deps'
+    .install 'atom-clang'
+    .then ->
+      console.log 'atom-clang', clangVersion()
+      commands.activate()
+      events.activate()
 
 deactivate = ->
   events.deactivate()
