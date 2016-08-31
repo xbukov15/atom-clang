@@ -19,7 +19,7 @@
         "__STDC_CONSTANT_MACROS",
         "__STDC_FORMAT_MACROS",
         "__STDC_LIMIT_MACROS",
-        "CLANG_SEARCH_PATH=\"<!(<(llvm_config) --libdir)/clang/$<!(<(llvm_config) --version)/include\""
+        "CLANG_SEARCH_PATH=\"<!(<(llvm_config) --libdir)/clang/<!(<(llvm_config) --version)/include\""
       ],
       "cflags!": [
       ],
