@@ -35,9 +35,9 @@
       }
     }
   },
-  "package-deps": {
-    "linter": "^1.11.16"
-  },
+  "package-deps": [
+    "linter"
+  ],
   "os": [
     "!win32"
   ]
