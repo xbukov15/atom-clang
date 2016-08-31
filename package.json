@@ -10,7 +10,7 @@
     "linter"
   ],
   "author": "Joe Roback",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index",
   "repository": "https://github.com/joeroback/atom-clang",
   "license": "MIT",
