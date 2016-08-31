@@ -7,19 +7,17 @@ util = require './util'
 
 module.exports = {
   name: 'Atom-Clang'
-  grammarScopes: scope.scopes
+  grammarScopes: scope.grammarScopes
   scope: 'file'
   lintOnFly: false
 
   lint: (editor) ->
-    debug.log 'lint', util.getEditorPath editor
-
     return [] unless atom.config.get 'atom-clang.linterEnabled',  scope: editor.getRootScopeDescriptor()
     return [] unless editor.clang?
 
     editor.clang.coalescer.reparse()
       .then (diagnostics) ->
-        debug.log 'diagnostics', diagnostics
+        debug.log 'diagnostics', diagnostics, editor
         diagnostics
       .catch util.showError []
 }

@@ -38,7 +38,7 @@ class ParseCoalescer
     return @_invokeActive @_reparse, args if not @_active?
 
     # if nothing is pending yet, set the pending func
-    @_pending.func = @_parse if @_pending.func is null
+    @_pending.func = @_reparse if @_pending.func is null
 
     # there is an active promise... if pending is also a reparse, update args, otherwise, leave parse alone
     @_pending.args = args if @_pending.func is @_reparse

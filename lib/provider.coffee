@@ -28,18 +28,28 @@ module.exports = {
     line = editor.getTextInRange [[bufferPosition.row, 0], bufferPosition]
     triggered = symbol_prefix.exec(line)?
     prefix = word_prefix.exec(line)?[0] or ''
-
     minimumWordLength = atom.config.get 'autocomplete-plus.minimumWordLength', scope: editor.getRootScopeDescriptor()
     deprecated = atom.config.get 'atom-clang.includeDeprecated', scope: editor.getRootScopeDescriptor()
+
+    debug.log \
+      'completions',
+      editor,
+      bufferPosition,
+      triggered,
+      prefix,
+      minimumWordLength,
+      deprecated,
+      activatedManually
 
     # only attempt completions if activated manually or prefix > minimum setting
     return null if not activatedManually and not triggered and prefix.length < minimumWordLength
 
-    debug.result 'completions', editor.clang.translationUnit.completions \
+    completions = editor.clang.completions \
       deprecated,
       prefix,
-      util.getEditorPath(editor),
       bufferPosition.row,
-      bufferPosition.column,
-      util.buildUnsavedFiles()
+      bufferPosition.column
+
+    debug.log 'completions', completions
+    completions
 }

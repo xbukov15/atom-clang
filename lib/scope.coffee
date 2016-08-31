@@ -8,7 +8,7 @@
 c_scope = 'source.c'
 cpp_scope = 'source.cpp'
 
-scopes = [
+grammarScopes = [
   c_scope
   cpp_scope
 ]
@@ -28,17 +28,17 @@ isCppScope = (rootScopeDescriptor) ->
 # check whether a given root scope descriptor's first element is one of the supported scopes
 isEnabledForScope = (rootScopeDescriptor) ->
   editorScopes = rootScopeDescriptor.getScopesArray()
-  return if editorScopes.length > 0 and scopes.indexOf(editorScopes[0]) >= 0 then true else false
+  return if editorScopes.length > 0 and grammarScopes.indexOf(editorScopes[0]) >= 0 then true else false
 
 # format supported scopes for autocomplete-plus provider api
 selectors = ->
-  '.' + scopes.join ', .'
+  '.' + grammarScopes.join ', .'
 
 module.exports = {
+  grammarScopes
   getScope
   isCScope
   isCppScope
   isEnabledForScope
   selectors
-  scopes
 }

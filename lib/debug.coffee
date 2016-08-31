@@ -5,11 +5,10 @@
 log = (area, args...) ->
   console.debug "atom-clang #{area}", args... if atom.inDevMode()
 
-result = (area, result) ->
-  console.debug "atom-clang #{area}", result if atom.inDevMode()
-  result
+trace = (area, args...) ->
+  console.trace "atom-clang #{area}", args... if atom.inDevMode()
 
 module.exports = {
   log
-  result
+  trace
 }

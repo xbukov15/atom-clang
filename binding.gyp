@@ -25,10 +25,12 @@
       "cflags_cc!": [
       ],
       "cflags": [
+        "-g",
         "-O2",
         "-flto",
       ],
       "cflags_cc": [
+        "-g",
         "-std=c++11",
         "-O2",
         "-flto",
@@ -37,6 +39,7 @@
         "-flto",
       ],
       "xcode_settings": {
+        "GCC_GENERATE_DEBUGGING_SYMBOLS": "YES",
         "CLANG_CXX_LANGUAGE_STANDARD": "c++11",
         "GCC_OPTIMIZATION_LEVEL": "2",
         "OTHER_CFLAGS": [
