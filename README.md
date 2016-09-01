@@ -40,8 +40,8 @@ Per project configuration with Atom is an ongoing open feature request. Thankful
 
 ## Keymaps
 
-<kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>r</kbd> Reparse Current Editor
-<kbd>shift</kbd>+<kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>r</kbd> Reparse All Editors
+* TODO: <kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>r</kbd> Reparse Current Editor
+* TODO: <kbd>shift</kbd>+<kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>r</kbd> Reparse All Editors
 
 ## Issues
 
@@ -56,14 +56,14 @@ I would love the roadmap to be largely driven by users, but her is a list I came
 
 #### Short Term
 
-- [ ] Add support for compile_commands.json
-- [ ] Add support for precompiled headers
+* Add support for compile_commands.json
+* Add support for precompiled headers
 
 #### Long Term
 
-- [ ] Replace [linter](https://atom.io/packages/linter) (I find the interface unsuited for C++ linting, and to be frank, very buggy)
-  - [ ] Add support for FixIt
-- [ ] Add support for <kbd>ctrl</kbd>-click code navigation
+* Replace [linter](https://atom.io/packages/linter) (I find the interface unsuited for C++ linting, and to be frank, very buggy)
+  * Add support for FixIt
+* Add support for <kbd>ctrl</kbd>-click code navigation
 
 ## License
 
