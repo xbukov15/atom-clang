@@ -1,10 +1,6 @@
 #
 # Copyright (c) 2016, Joe Roback <joe.roback@gmail.com>. All Rights Reserved.
 #
-scope = require './scope'
-
-os = require 'os'
-path = require 'path'
 
 # if an error occurs, show it to the user..
 showError = (result) ->

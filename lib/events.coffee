@@ -1,6 +1,9 @@
 #
 # Copyright (c) 2016, Joe Roback <joe.roback@gmail.com>. All Rights Reserved.
 #
+os = require 'os'
+path = require 'path'
+
 debug = require './debug'
 scope = require './scope'
 util = require './util'
