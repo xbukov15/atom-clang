@@ -38,6 +38,42 @@ You can set global `CFLAGS` and `CXXFLAGS`. This will work for any random projec
 
 Per project configuration with Atom is an ongoing open feature request. Thankfully, [Project Manager](https://atom.io/packages/project-manager) gives us at least 99% of what we want. It does require you to manually edit the project settings file.
 
+![](https://cloud.githubusercontent.com/assets/156174/18150928/f3d07f4e-6fa7-11e6-957c-3068969061f2.png)
+
+```CoffeeScript
+my_project:
+  title: "Test Project"
+  paths: [
+    "/home/user/my_project"
+  ]
+  icon: "icon-file-code"
+  settings:
+    "*":
+      "atom-clang":
+        linterEnabled: true
+        includeDeprecated: false
+        maxCompletions: 1000
+        defaultCFlags: [
+          "-std=c99"
+          "-Wall"
+          "-Wextra"
+          "-D_REENTRANT"
+          "-D_GNU_SOURCE"
+          "-I /opt/local/include"
+          "-I /home/user/my_project"
+        ]
+        defaultCXXFlags: [
+          "-std=c++1z"
+          "-Wall"
+          "-Wextra"
+          "-D_REENTRANT"
+          "-D_GNU_SOURCE"
+          "-fexceptions"
+          "-I /opt/local/include"
+          "-I /home/user/my_project"
+        ]
+```
+
 ## Keymaps
 
 * TODO: <kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>r</kbd> Reparse Current Editor
