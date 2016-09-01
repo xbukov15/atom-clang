@@ -14,13 +14,6 @@ module.exports = {
     type: 'boolean'
     default: true
     order: 2
-  maxCompletions:
-    title: 'The maximum number of completions to return from clang for single completion attempt.'
-    description: 'Set to 0 for all results. ~500 is probably a reasonable maximum for most people.'
-    type: 'integer'
-    default: 500
-    minimum: 0
-    order: 3
   defaultCFlags:
     title: 'Default CFlags'
     description: 'CFLAGS to pass to clang parser. Comma separated.'
@@ -31,7 +24,7 @@ module.exports = {
     ]
     items:
       type: 'string'
-    order: 4
+    order: 3
   defaultCXXFlags:
     title: 'Default CXXFlags'
     description: 'CXXFLAGS to pass to clang parser. Comma separated.'
@@ -43,5 +36,5 @@ module.exports = {
     ]
     items:
       type: 'string'
-    order: 5
+    order: 4
 }

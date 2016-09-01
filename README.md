@@ -52,7 +52,6 @@ my_project:
       "atom-clang":
         linterEnabled: true
         includeDeprecated: false
-        maxCompletions: 1000
         defaultCFlags: [
           "-std=c99"
           "-Wall"
