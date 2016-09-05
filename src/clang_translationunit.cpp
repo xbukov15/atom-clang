@@ -447,6 +447,8 @@ void clang_translationunit::dispose()
 {
     if (_tunit)
     {
+        this_logger::log("clang_translationunit::dispose(%s) = %p", _filename.c_str(), _tunit);
+
         clang_disposeTranslationUnit(_tunit);
         _tunit = nullptr;
     }
