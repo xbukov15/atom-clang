@@ -12,12 +12,12 @@ module.exports = {
   lintOnFly: false
 
   lint: (editor) ->
-    return [] unless atom.config.get 'atom-clang.linterEnabled',  scope: editor.getRootScopeDescriptor()
     return [] unless editor.clang?
+    return [] unless atom.config.get 'atom-clang.linterEnabled',  scope: editor.getRootScopeDescriptor()
 
     editor.clang.coalescer.reparse()
       .then (diagnostics) ->
-        debug.log 'diagnostics', diagnostics, editor
+        debug.log 'diagnostics', editor.clang, diagnostics
         diagnostics
       .catch util.showError []
 }

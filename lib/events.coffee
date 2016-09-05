@@ -1,6 +1,7 @@
 #
 # Copyright (c) 2016, Joe Roback <joe.roback@gmail.com>. All Rights Reserved.
 #
+fs = require 'fs'
 os = require 'os'
 path = require 'path'
 
@@ -14,10 +15,14 @@ util = require './util'
 
 disposables = null
 
-# clang needs a file path, so if this is an empty buffer, create a unique temporary file path for the buffer
+# clang needs a valid file path, so if this is an empty buffer, create a unique temporary file path for the buffer
 getEditorPath = (editor) ->
   filepath = editor.getPath()
-  return if filepath? then filepath else path.resolve os.tmpdir(), "AtomClangBuffer-#{editor.getBuffer().getId()}"
+  return filepath if filepath?
+  filepath = path.resolve os.tmpdir(), "AtomClangBuffer-#{editor.getBuffer().getId()}"
+  # TODO clean these up?
+  fs.closeSync fs.openSync filepath, 'w' if not fs.existsSync filepath
+  return filepath
 
 # libclang args cannot have spaces in, from a user perspective that is annoying, correct it here
 flags_re = /\s+/
@@ -96,7 +101,7 @@ observeEditors = ->
 
       # if the path changes, load again, disposing old state
       editor.clang.subscriptions.add editor.onDidChangePath ->
-        debug.log 'onDidChangePath', editor
+        debug.log 'onDidChangePath', editor.clang
         unload()
         load()
 
@@ -107,10 +112,18 @@ observeEditors = ->
       # completions for. if files are modified outside Atom, undefined results
       # will happen, best case, is wrong completion data is returned.
       editor.clang.subscriptions.add editor.onDidSave ->
-        debug.log 'onDidSave', editor
+        debug.log 'onDidSave', editor.clang
         atom.workspace.getTextEditors().forEach (other) ->
           if other.clang?
             other.clang.coalescer.reparse().catch util.showError []
+
+      # clang translation unit uses CXTranslationUnit_CacheCompletionResults, so we
+      # need to periodically reparse the translation unit to keep the results fresh
+      # removing the CXTranslationUnit_CacheCompletionResults flag results in really,
+      # really laggy completions...
+      editor.clang.subscriptions.add editor.onDidStopChanging ->
+        debug.log 'onDidStopChanging', editor.clang
+        editor.clang.coalescer.reparse().catch util.showError []
 
       # setup clang flags based on scope/grammar, listen for config changes
       # if the grammar changes, the editor observer will fully unload and re-load
@@ -132,7 +145,7 @@ observeEditors = ->
 
     unload = ->
       return unless editor.clang?
-      debug.log 'unload', editor
+      debug.log 'unload', editor.clang
 
       # dispose of clang property
       editor.clang.subscriptions.dispose()
@@ -151,13 +164,13 @@ observeEditors = ->
 
     # when the grammar changes, attempt to load, this is the main entry point when a file is opened
     editorDisposables.add editor.observeGrammar ->
-      debug.log 'observeGrammar', editor
+      debug.log 'observeGrammar', editor.clang
       unload()
       load()
 
     # remove all observers, dispose of atom-clang state
     editorDisposables.add editor.onDidDestroy ->
-      debug.log 'onDidDestroy', editor
+      debug.log 'onDidDestroy', editor.clang
       editorDisposables.dispose()
       editorDisposables = null
       unload()
@@ -169,6 +182,11 @@ activate = ->
 deactivate = ->
   disposables.dispose()
   disposables = null
+  atom.workspace.getTextEditors().forEach (editor) ->
+    if editor.clang?
+      editor.clang.subscriptions.dispose()
+      editor.clang.translationUnit.dispose()
+      delete editor.clang
 
 module.exports = {
   activate

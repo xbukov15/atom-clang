@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2016, Joe Roback <joe.roback@gmail.com>. All Rights Reserved.
  */
+#include <cassert>
 #include <cstdint>
 #include <sstream>
 #include <vector>
@@ -9,6 +10,7 @@
 #include "command_line_args.hpp"
 #include "completion.hpp"
 #include "diagnostic.hpp"
+#include "logger.hpp"
 #include "unsaved_files.hpp"
 
 #include "clang_translationunit.hpp"
@@ -206,6 +208,8 @@ Nan::Persistent<v8::Function> clang_translationunit::constructor;
 
 void clang_translationunit::initialize(v8::Local<v8::Object> exports)
 {
+    this_logger::log("clang_translationunit::initialize(%p, %p)", &func_template, &constructor);
+
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(allocate);
     tpl->SetClassName(Nan::New("ClangTranslationUnit").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -283,7 +287,7 @@ void clang_translationunit::completions(const Nan::FunctionCallbackInfo<v8::Valu
     auto worker = new completion_worker(obj,
                                         *src_filename,
                                         line + 1,
-                                        column + 1 - local_prefix->Utf8Length(),
+                                        column + 1,
                                         unsaved_files,
                                         deprecated,
                                         info.This(),
@@ -306,10 +310,13 @@ clang_translationunit::clang_translationunit(const std::string& filename)
     , _index(clang_createIndex(0, 0))
     , _tunit(nullptr)
 {
+    this_logger::log("clang_translationunit(%s)", _filename.c_str());
 }
 
 clang_translationunit::~clang_translationunit()
 {
+    this_logger::log("~clang_translationunit(%s)", _filename.c_str());
+
     dispose();
     clang_disposeIndex(_index);
     _index = nullptr;
@@ -329,12 +336,22 @@ int clang_translationunit::parse(bool force_parse,
 
         if (!_tunit || force_parse)
         {
-            unsigned options = clang_defaultEditingTranslationUnitOptions() |
-                               CXTranslationUnit_CacheCompletionResults |
-                               CXTranslationUnit_CreatePreambleOnFirstParse |
-                               CXTranslationUnit_DetailedPreprocessingRecord |
-                               CXTranslationUnit_IncludeBriefCommentsInCodeCompletion |
-                               CXTranslationUnit_PrecompiledPreamble;
+            /*
+             * As of this writing, clang_defaultEditingTranslationUnitOptions() enables
+             * CXTranslationUnit_PrecompiledPreamble and CXTranslationUnit_CacheCompletionResults.
+             *
+             * CXTranslationUnit_CacheCompletionResults requires the editor to reparse more often
+             * as completions results can be outdated and incomplete otherwise.
+             */
+            unsigned options = clang_defaultEditingTranslationUnitOptions()
+                             | CXTranslationUnit_CreatePreambleOnFirstParse
+                             | CXTranslationUnit_DetailedPreprocessingRecord
+                             | CXTranslationUnit_IncludeBriefCommentsInCodeCompletion
+                             | CXTranslationUnit_Incomplete
+                             #if CINDEX_VERSION_MINOR >= 34
+                             | CXTranslationUnit_KeepGoing
+                             #endif
+                             ;
 
             // if we are forcing a full parse, make sure to dispose of the old one...
             dispose();
@@ -347,32 +364,14 @@ int clang_translationunit::parse(bool force_parse,
                                               unsaved_files.size(),
                                               options,
                                               &_tunit);
-            // bail on error
-            if (ret != 0)
-            {
-                dispose();
-                return ret;
-            }
         }
-
-        //
-        // [cfe-dev] Clang indexing library performance
-        // Douglas Gregor dgregor at apple.com
-        // Sat Oct 1 11:44:48 PDT 2011
-        //
-        // You want to use the "default editing options" when parsing the translation unit
-        //    clang_defaultEditingTranslationUnitOptions()
-        // and then reparse at least once. That will enable the various code-completion optimizations
-        // that should bring this time down significantly.
-        //
-        // though it seems like CXTranslationUnit_CreatePreambleOnFirstParse option
-        // would fix this... unknown
-        //
-
-        ret = clang_reparseTranslationUnit(_tunit,
-                                           unsaved_files.size(),
-                                           unsaved_files.data(),
-                                           clang_defaultReparseOptions(_tunit));
+        else
+        {
+            ret = clang_reparseTranslationUnit(_tunit,
+                                               unsaved_files.size(),
+                                               unsaved_files.data(),
+                                               clang_defaultReparseOptions(_tunit));
+        }
 
         // bail on error
         if (ret != 0)
@@ -387,8 +386,8 @@ int clang_translationunit::parse(bool force_parse,
 
     // process diagnostics outside of lock
     unsigned num_diagnostics = clang_getNumDiagnosticsInSet(diagnostic_set);
-    diagnostics.clear();
     diagnostics.reserve(num_diagnostics);
+    assert(diagnostics.empty());
 
     for (unsigned i = 0; i < num_diagnostics; ++i)
     {

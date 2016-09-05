@@ -33,10 +33,10 @@ module.exports = {
 
     debug.log \
       'completions',
-      editor,
+      editor.clang,
       bufferPosition,
       triggered,
-      prefix,
+      "[#{prefix}]",
       minimumWordLength,
       deprecated,
       activatedManually
@@ -48,7 +48,7 @@ module.exports = {
       deprecated,
       prefix,
       bufferPosition.row,
-      bufferPosition.column
+      bufferPosition.column - prefix.length
 
     debug.log 'completions', completions
     completions
