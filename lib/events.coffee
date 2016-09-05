@@ -71,7 +71,7 @@ observeEditors = ->
 
     load = ->
       return unless scope.isEnabledForScope editor.getRootScopeDescriptor()
-      debug.log 'load', editor
+      debug.log 'load', editor.clang
       console.assert not editor.clang?, editor
 
       editor.clang =
