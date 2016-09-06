@@ -60,7 +60,6 @@ private:
     static v8::Local<v8::Object> wrapMyObject(clang_translationunit* obj);
 
 private:
-    static Nan::Persistent<v8::FunctionTemplate> func_template;
     static Nan::Persistent<v8::Function> constructor;
 
 public:

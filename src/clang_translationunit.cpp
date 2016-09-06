@@ -203,12 +203,11 @@ private:
     std::vector<completion> _completions;
 };
 
-Nan::Persistent<v8::FunctionTemplate> clang_translationunit::func_template;
 Nan::Persistent<v8::Function> clang_translationunit::constructor;
 
 void clang_translationunit::initialize(v8::Local<v8::Object> exports)
 {
-    this_logger::log("clang_translationunit::initialize(%p, %p)", &func_template, &constructor);
+    this_logger::log("clang_translationunit::initialize(%p)", &constructor);
 
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(allocate);
     tpl->SetClassName(Nan::New("ClangTranslationUnit").ToLocalChecked());
@@ -218,9 +217,7 @@ void clang_translationunit::initialize(v8::Local<v8::Object> exports)
     Nan::SetPrototypeMethod(tpl, "completions", completions);
     Nan::SetPrototypeMethod(tpl, "dispose", dispose);
 
-    func_template.Reset(tpl);
     constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
-
     Nan::Set(exports, Nan::New("ClangTranslationUnit").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 }
 
