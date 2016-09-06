@@ -20,7 +20,8 @@
   "dependencies": {
     "atom-package-deps": "^4.3.1",
     "bindings": "^1.2.1",
-    "nan": "^2.4.0"
+    "nan": "^2.4.0",
+    "segfault-handler": "^1.0.0"
   },
   "devDependencies": {},
   "providedServices": {
