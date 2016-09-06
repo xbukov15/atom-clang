@@ -15,7 +15,6 @@
         "src/unsaved_files.cpp",
       ],
       "defines": [
-        "NDEBUG",
         "__STDC_CONSTANT_MACROS",
         "__STDC_FORMAT_MACROS",
         "__STDC_LIMIT_MACROS",
@@ -28,13 +27,11 @@
       "cflags": [
         "-g",
         "-O2",
-        "-flto",
       ],
       "cflags_cc": [
         "-g",
         "-std=c++11",
         "-O2",
-        "-flto",
       ],
       "ldflags": [
         "-flto",
@@ -44,10 +41,8 @@
         "CLANG_CXX_LANGUAGE_STANDARD": "c++11",
         "GCC_OPTIMIZATION_LEVEL": "2",
         "OTHER_CFLAGS": [
-          "-flto",
         ],
         "OTHER_LDFLAGS": [
-          "-flto",
         ],
       },
       "include_dirs": [
