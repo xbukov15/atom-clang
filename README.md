@@ -91,6 +91,7 @@ I would love the roadmap to be largely driven by users, but her is a list I came
 
 #### Short Term
 
+* Add status bar indications for background processing of parsing, completions... Some large C++ can take time to parse/complete..
 * Add support for compile_commands.json
 * Add support for precompiled headers
 
