@@ -28,14 +28,12 @@ class parse_worker
 public:
     explicit parse_worker(clang_translationunit* tu,
                           bool force_parse,
-                          const v8::Local<v8::Array>& command_line_args,
                           const v8::Local<v8::Array>& unsaved_files,
                           const v8::Local<v8::Object>& self,
                           const v8::Local<v8::Promise::Resolver>& resolver)
         : Nan::AsyncWorker(nullptr)
         , _tu(tu)
         , _force_parse(force_parse)
-        , _command_line_args(command_line_args)
         , _unsaved_files(unsaved_files)
         , _ret(0)
     {
@@ -45,9 +43,8 @@ public:
 
     virtual void Execute() override
     {
-        _ret = _tu->parse(_force_parse, _command_line_args, _unsaved_files, _diagnostics);
+        _ret = _tu->parse(_force_parse, _unsaved_files, _diagnostics);
         // optimization since these are no longer needed, free on uv thread...
-        _command_line_args.dispose();
         _unsaved_files.dispose();
     }
 
@@ -113,7 +110,6 @@ public:
 private:
     clang_translationunit* _tu;
     bool _force_parse;
-    command_line_args _command_line_args;
     unsaved_files _unsaved_files;
     int _ret;
     std::vector<diagnostic> _diagnostics;
@@ -215,6 +211,7 @@ void clang_translationunit::initialize(v8::Local<v8::Object> exports)
 
     Nan::SetPrototypeMethod(tpl, "parse", parse);
     Nan::SetPrototypeMethod(tpl, "completions", completions);
+    Nan::SetPrototypeMethod(tpl, "setArgs", set_args);
     Nan::SetPrototypeMethod(tpl, "dispose", dispose);
 
     constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
@@ -256,11 +253,10 @@ void clang_translationunit::parse(const Nan::FunctionCallbackInfo<v8::Value>& in
     v8::Local<v8::Promise::Resolver> resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
 
     auto force_parse = Nan::To<bool>(info[0]).FromJust();
-    auto command_line_args = v8::Local<v8::Array>::Cast(info[1]);
-    auto unsaved_files = v8::Local<v8::Array>::Cast(info[2]);
+    auto unsaved_files = v8::Local<v8::Array>::Cast(info[1]);
 
     // perform parsing asynchronously on libuv thread
-    auto worker = new parse_worker(obj, force_parse, command_line_args, unsaved_files, info.This(), resolver);
+    auto worker = new parse_worker(obj, force_parse, unsaved_files, info.This(), resolver);
     Nan::AsyncQueueWorker(worker);
 
     // return promise
@@ -296,6 +292,13 @@ void clang_translationunit::completions(const Nan::FunctionCallbackInfo<v8::Valu
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 
+void clang_translationunit::set_args(const Nan::FunctionCallbackInfo<v8::Value>& info)
+{
+    clang_translationunit* obj = Nan::ObjectWrap::Unwrap<clang_translationunit>(info.Holder());
+    auto args = v8::Local<v8::Array>::Cast(info[0]);
+    obj->set_args(args);
+}
+
 void clang_translationunit::dispose(const Nan::FunctionCallbackInfo<v8::Value>& info)
 {
     clang_translationunit* obj = Nan::ObjectWrap::Unwrap<clang_translationunit>(info.Holder());
@@ -306,6 +309,7 @@ clang_translationunit::clang_translationunit(const std::string& filename)
     : _filename(filename)
     , _index(clang_createIndex(0, 0))
     , _tunit(nullptr)
+    , _args(new command_line_args())
 {
     this_logger::log("clang_translationunit(%s)", _filename.c_str());
 }
@@ -320,7 +324,6 @@ clang_translationunit::~clang_translationunit()
 }
 
 int clang_translationunit::parse(bool force_parse,
-                                 command_line_args& command_line_args,
                                  unsaved_files& unsaved_files,
                                  std::vector<diagnostic>& diagnostics)
 {
@@ -355,8 +358,8 @@ int clang_translationunit::parse(bool force_parse,
 
             ret = clang_parseTranslationUnit2(_index,
                                               _filename.c_str(),
-                                              command_line_args.data(),
-                                              command_line_args.size(),
+                                              _args->data(),
+                                              _args->size(),
                                               unsaved_files.data(),
                                               unsaved_files.size(),
                                               options,
@@ -438,6 +441,12 @@ std::vector<completion> clang_translationunit::completions(const std::string& fi
     clang_disposeCodeCompleteResults(completions);
 
     return completions2;
+}
+
+void clang_translationunit::set_args(v8::Local<v8::Array>& args)
+{
+    std::lock_guard<std::mutex> lock(_lock);
+    _args.reset(new command_line_args(args));
 }
 
 void clang_translationunit::dispose()

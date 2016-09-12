@@ -64,16 +64,15 @@ load = (editor) ->
   parse = ->
     debug.log 'parse', editor.clang, buildUnsavedFiles(), getEditorPath editor
     return Promise.resolve([]) unless editor.clang?
-    editor.clang.translationUnit.parse true, editor.clang.flags, buildUnsavedFiles()
+    editor.clang.translationUnit.parse true, buildUnsavedFiles()
 
   # reparse translation unit
   reparse = ->
     debug.log 'reparse', editor.clang, buildUnsavedFiles(), getEditorPath editor
     return Promise.resolve([]) unless editor.clang?
-    editor.clang.translationUnit.parse false, editor.clang.flags, buildUnsavedFiles()
+    editor.clang.translationUnit.parse false, buildUnsavedFiles()
 
   editor.clang =
-    flags: null
     translationUnit: null
     coalescer: null
     completions: null
@@ -136,13 +135,13 @@ load = (editor) ->
     editor.clang.subscriptions.add atom.config.observe 'atom-clang.defaultCFlags', (flags) ->
       flags.push '-xc'
       flags.push '-Wno-pragma-once-outside-header'
-      editor.clang.flags = formatFlags flags
+      editor.clang.translationUnit.setArgs formatFlags flags
       editor.clang.coalescer.parse().catch util.showError()
   else if scope.isCppScope editor.getRootScopeDescriptor()
     editor.clang.subscriptions.add atom.config.observe 'atom-clang.defaultCXXFlags', (flags) ->
       flags.push '-xc++'
       flags.push '-Wno-pragma-once-outside-header'
-      editor.clang.flags = formatFlags flags
+      editor.clang.translationUnit.setArgs formatFlags flags
       editor.clang.coalescer.parse().catch util.showError()
   else
     editorScope = scope.getScope editor.getRootScopeDescriptor()

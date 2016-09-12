@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <mutex>
 
 #include <clang-c/Index.h>
@@ -28,9 +29,6 @@ class unsaved_files;
 class clang_translationunit final
     : public Nan::ObjectWrap
 {
-    friend class parse_worker;
-    friend class completion_worker;
-
 public:
     static void initialize(v8::Local<v8::Object> exports);
 
@@ -49,6 +47,11 @@ private:
      * get all code completions at a given line, column
      */
     static void completions(const Nan::FunctionCallbackInfo<v8::Value>& info);
+
+    /**
+     * set the command line args used of parsing
+     */
+    static void set_args(const Nan::FunctionCallbackInfo<v8::Value>& info);
 
     /**
      * destroy any clang memory used. since JS is garbage collected,
@@ -71,14 +74,11 @@ public:
         return _filename;
     }
 
-private:
     /**
      * @param force_parse force a full parse instead of a reparse (e.g. if command line args have changed)
-     * @param command_line_args set of arguments to pass into libclang for compiling this translation unit
      * @param unsaved_file any unsaved file contents that libclang needs to provide up to date parsing and completions
      */
     int parse(bool force_parse,
-              command_line_args& command_line_args,
               unsaved_files& unsaved_files,
               std::vector<diagnostic>& diagnostics);
 
@@ -96,6 +96,13 @@ private:
                                         bool deprecated);
 
     /**
+     * set the command line args from javascript so on each query the javascript to
+     * C++ conversion does not have to happen every time.. since its only needed for
+     * full parse() invocations.
+     */
+    void set_args(v8::Local<v8::Array>& args);
+
+    /**
      * release any memory associated with this translation unit from libclang
      */
     void dispose();
@@ -105,6 +112,7 @@ private:
     std::string _filename;
     CXIndex _index;
     CXTranslationUnit _tunit;
+    std::unique_ptr<command_line_args> _args;
 };
 
 }
