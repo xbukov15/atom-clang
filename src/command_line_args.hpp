@@ -24,8 +24,8 @@ class command_line_args final
     NODE_CLANG_NO_MOVEABLE(command_line_args);
 
 public:
-    explicit command_line_args() noexcept = default;
-    explicit command_line_args(const v8::Local<v8::Array>& js_command_line_args);
+    explicit command_line_args() noexcept;
+    explicit command_line_args(const v8::Local<v8::Array>& js_command_line_args) noexcept;
     ~command_line_args() noexcept;
 
     const char* const* data() const& noexcept
