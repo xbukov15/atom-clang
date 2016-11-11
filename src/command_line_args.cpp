@@ -10,7 +10,11 @@
 namespace node_clang
 {
 
-command_line_args::command_line_args(const v8::Local<v8::Array>& js_command_line_args)
+command_line_args::command_line_args() noexcept
+{
+}
+
+command_line_args::command_line_args(const v8::Local<v8::Array>& js_command_line_args) noexcept
 {
     std::uint32_t length = js_command_line_args->Length();
     _data.reserve(length + 1);
