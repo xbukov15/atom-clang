@@ -1,6 +1,17 @@
 {
+  "conditions": [
+    ['OS=="mac"',
+      {
+        "make_global_settings": [
+          [ "CC",   "<!(which clang)" ],
+          [ "CXX",  "<!(which clang++)" ],
+          [ "LINK", "<!(which clang++)" ],
+        ],
+      }
+    ],
+  ],
   "variables": {
-    "llvm_config": "<!(./llvm-config.sh)"
+    "llvm_config": "<!(./llvm-config.sh)",
   },
   "targets": [
     {
@@ -18,7 +29,7 @@
         "__STDC_CONSTANT_MACROS",
         "__STDC_FORMAT_MACROS",
         "__STDC_LIMIT_MACROS",
-        "CLANG_SEARCH_PATH=\"<!(<(llvm_config) --libdir)/clang/<!(<(llvm_config) --version)/include\""
+        "CLANG_SEARCH_PATH=\"<!(<(llvm_config) --libdir)/clang/<!(<(llvm_config) --version)/include\"",
       ],
       "cflags!": [
       ],
@@ -32,6 +43,7 @@
         "-g",
         "-std=c++11",
         "-O2",
+        "-flto",
       ],
       "ldflags": [
         "-flto",
@@ -39,10 +51,13 @@
       "xcode_settings": {
         "GCC_GENERATE_DEBUGGING_SYMBOLS": "YES",
         "CLANG_CXX_LANGUAGE_STANDARD": "c++11",
+        "CLANG_CXX_LIBRARY": "libc++",
         "GCC_OPTIMIZATION_LEVEL": "2",
         "OTHER_CFLAGS": [
+          "-flto",
         ],
         "OTHER_LDFLAGS": [
+          "-flto",
         ],
       },
       "include_dirs": [
