@@ -23,7 +23,9 @@
     "nan": "^2.4.0",
     "segfault-handler": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cmake-js": "^3.3.1"
+  },
   "providedServices": {
     "autocomplete.provider": {
       "versions": {
@@ -39,6 +41,9 @@
   "package-deps": [
     "linter"
   ],
+  "scripts": {
+    "install": "./install.sh"
+  },
   "os": [
     "!win32"
   ]
