@@ -25,6 +25,13 @@ add_definitions(
     -D_GNU_SOURCE
     -DCLANG_SEARCH_PATH="${LIBCLANG_SEARCH_PATH}"
     ${LIBCLANG_DEFINITIONS}
+    # workarounds for Atom/Node/CMake-js
+    -DUSING_UV_SHARED=1
+    -DUSING_V8_SHARED=1
+    -DV8_DEPRECATION_WARNINGS=1
+    -D_LARGEFILE_SOURCE
+    -D_FILE_OFFSET_BITS=64
+    -DBUILDING_NODE_EXTENSION
 )
 
 include_directories(SYSTEM
