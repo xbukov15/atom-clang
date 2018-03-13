@@ -2,9 +2,6 @@ crypto = require 'crypto'
 os = require 'os'
 path = require 'path'
 
-sigsegv = require 'segfault-handler'
-sigsegv.registerHandler path.resolve os.tmpdir(), 'atom-clang-crash.log'
-
 commands = require './lib/commands'
 config = require './lib/config'
 events = require './lib/events'
