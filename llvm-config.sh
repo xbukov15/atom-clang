@@ -4,7 +4,7 @@
 # known naming conventions of llvm-config, looking for the latest version
 
 [[ -z ${LLVM_CONFIG} ]] \
-    && LLVM_CONFIG=$(which llvm-config 2>/dev/null)
+    && LLVM_CONFIG=$(which llvm-config 2>/dev/null) \
     || LLVM_CONFIG=$(which llvm-config-6.0 2>/dev/null) \
     || LLVM_CONFIG=$(which llvm-config-5.0 2>/dev/null) \
     || LLVM_CONFIG=$(which llvm-config-4.0 2>/dev/null) \
