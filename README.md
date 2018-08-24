@@ -1,3 +1,5 @@
+# Note: I no longer maintain this. I found Visual Studio Code + https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools is better at this point. It is not perfect, but more features and I find Code to be faster than Atom.
+
 # atom-clang
 
 [LibClang](http://clang.llvm.org/docs/Tooling.html) based code completion and linter for [Atom Editor](http://atom.io)
